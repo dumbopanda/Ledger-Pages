@@ -14,8 +14,8 @@
   // audience, not a credential). Hardcoded here, not injected server-side, because
   // this is now a static file (Supabase Edge Functions force text/plain + a
   // script-blocking CSP on any GET response that tries to serve HTML -- confirmed
-  // live 2026-09-26, see KNOWN-ISSUES.md -- so the page itself has to be hosted
-  // somewhere else; only the delete-account API call below still goes to Supabase).
+  // live 2026-09-26 -- so the page itself has to be hosted somewhere else; only
+  // the delete-account API call below still goes to Supabase).
   const SUPABASE_URL = "https://objcwocrbflwywckltbe.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_aJLulClSY3s0QyD6E8QEVg_I79ae8bn";
   const GOOGLE_CLIENT_ID = "141141696760-mq9uhebnj33uiddj1puevvdnigcuvg43.apps.googleusercontent.com";
