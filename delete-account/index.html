@@ -3,48 +3,259 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light" />
+<meta name="description" content="Permanently delete your Ledger account and everything stored with it." />
 <title>Delete your Ledger account</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230E7955'/%3E%3Cpath d='M11 8v16h10' stroke='%23CCF244' stroke-width='3.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  /* Colours, type and shapes mirror the Android app's design system (core:designsystem). */
+  :root {
+    --canvas: #F4F1EA;
+    --surface: #FFFFFF;
+    --forest: #0E7955;
+    --lime: #CCF244;
+    --mint: #DDF3E4;
+    --amber: #FFDE73;
+    --amber-soft: #FFF6D6;
+    --coral: #C62828;
+    --coral-soft: #FBE9E7;
+    --text: #181C1A;
+    --muted: #5F5C56;
+    --hairline: #E5E3DB;
+    --radius-card: 22px;
+    --radius-input: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--canvas);
+    color: var(--text);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .wrap { width: 100%; max-width: 520px; margin: 0 auto; padding: 0 16px; }
+
+  header { padding: 28px 0 20px; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; color: var(--text); text-decoration: none; }
+  .brand-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--forest); display: grid; place-items: center; }
+
+  main { flex: 1; }
+  .card { background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--radius-card); padding: 28px 24px; }
+  @media (min-width: 480px) { .card { padding: 32px; } }
+
+  h1 { font-size: 28px; line-height: 36px; font-weight: 700; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .lead { color: var(--muted); margin: 0 0 24px; }
+
+  /* Step indicator */
+  .steps { display: flex; gap: 8px; list-style: none; padding: 0; margin: 0 0 28px; }
+  .steps li { flex: 1; font-size: 12px; font-weight: 500; color: var(--muted); }
+  .steps li::before { content: ""; display: block; height: 4px; border-radius: 4px; background: var(--hairline); margin-bottom: 8px; transition: background .2s; }
+  .steps li.active { color: var(--text); }
+  .steps li.active::before { background: var(--forest); }
+  .steps li.passed::before { background: var(--forest); opacity: .45; }
+
+  /* What gets deleted */
+  .section-title { font-size: 14px; font-weight: 600; margin: 0 0 12px; }
+  .deleted { list-style: none; padding: 0; margin: 0 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .deleted li { display: flex; align-items: center; gap: 10px; background: var(--canvas); border-radius: var(--radius-input); padding: 12px; font-size: 14px; font-weight: 500; }
+  .deleted svg { flex: none; color: var(--coral); }
+
+  .banner { display: flex; gap: 12px; border-radius: var(--radius-input); padding: 14px 16px; font-size: 14px; margin: 0 0 24px; }
+  .banner svg { flex: none; margin-top: 1px; }
+  .banner.warn { background: var(--amber-soft); border: 1px solid var(--amber); }
+  .banner.error { background: var(--coral-soft); color: var(--coral); border: 1px solid #F3C7C3; margin: 16px 0 0; }
+  .banner strong { font-weight: 600; }
+
+  .divider { height: 1px; background: var(--hairline); margin: 4px 0 24px; border: 0; }
+
+  .hint { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+  #g_id_signin { min-height: 44px; display: flex; justify-content: center; }
+
+  /* Confirm step */
+  .who { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--mint); border-radius: var(--radius-input); padding: 12px 16px; margin: 0 0 20px; font-size: 14px; }
+  .who strong { font-weight: 600; word-break: break-all; }
+  .link-btn { background: none; border: 0; padding: 4px 0; font: inherit; font-size: 14px; font-weight: 500; color: var(--forest); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+  label { display: block; font-size: 14px; font-weight: 500; margin: 0 0 8px; }
+  input[type=text] {
+    width: 100%; font: inherit; font-size: 16px; letter-spacing: 0.08em;
+    padding: 12px 14px; border: 1px solid var(--hairline); border-radius: var(--radius-input);
+    background: var(--canvas); color: var(--text); outline: none; transition: border-color .15s, box-shadow .15s;
+  }
+  input[type=text]:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(14,121,85,.15); background: var(--surface); }
+
+  .actions { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+  .pill {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    min-height: 48px; padding: 12px 24px; border: 0; border-radius: 999px;
+    font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .15s, opacity .15s;
+  }
+  .pill.danger { background: var(--coral); color: #fff; }
+  .pill.danger:hover:not(:disabled) { background: #A91F1F; }
+  .pill.primary { background: var(--forest); color: var(--canvas); }
+  .pill:disabled { background: var(--hairline); color: var(--muted); cursor: not-allowed; }
+  .pill.ghost { background: transparent; color: var(--muted); font-weight: 500; }
+  .pill.ghost:hover { color: var(--text); }
+  button:focus-visible, a:focus-visible { outline: 3px solid rgba(14,121,85,.4); outline-offset: 2px; }
+
+  .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Done step */
+  .done { text-align: center; padding: 8px 0; }
+  .done-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--mint); display: grid; place-items: center; margin: 0 auto 20px; }
+  .done h2 { font-size: 22px; line-height: 28px; font-weight: 600; margin: 0 0 8px; }
+  .done p { color: var(--muted); margin: 0 0 8px; }
+
+  .alt { font-size: 14px; color: var(--muted); text-align: center; margin: 20px 0 0; }
+
+  footer { padding: 28px 0 32px; font-size: 13px; color: var(--muted); text-align: center; }
+
+  [hidden] { display: none !important; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation-duration: 1.5s !important; } }
+</style>
+</head>
+<body>
+  <header class="wrap">
+    <span class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path d="M5 3v12h8" stroke="#CCF244" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      Ledger
+    </span>
+  </header>
+
+  <main class="wrap">
+    <div class="card">
+      <ol class="steps" aria-label="Progress">
+        <li id="step-1" class="active" aria-current="step">1 · Sign in</li>
+        <li id="step-2">2 · Confirm</li>
+        <li id="step-3">3 · Done</li>
+      </ol>
+
+      <!-- Step 1 -->
+      <section id="sign-in-section" aria-labelledby="title">
+        <h1 id="title">Delete your account</h1>
+        <p class="lead">This deletes your entries, your accounts, your profile, and your Google sign-in link. It happens immediately and cannot be undone.</p>
+
+        <p class="section-title">What gets deleted</p>
+        <ul class="deleted">
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>All your entries</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Your accounts</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Your profile</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Google sign-in link</li>
+        </ul>
+
+        <div class="banner warn" role="note">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A6D00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+          <span><strong>Want to keep a copy?</strong> Before deleting, open Ledger on your phone and go to <strong>Settings → Backup → Save a backup file</strong>.</span>
+        </div>
+
+        <hr class="divider" />
+        <p class="hint">Sign in with the Google account you use with Ledger to continue.</p>
+        <div id="g_id_signin"></div>
+      </section>
+
+      <!-- Step 2 -->
+      <section id="confirm-section" aria-labelledby="confirm-title" hidden>
+        <h1 id="confirm-title">Type DELETE to confirm</h1>
+        <p class="lead">This is the last step. It cannot be undone.</p>
+
+        <div class="who">
+          <span>Signed in as <strong id="signed-in-email"></strong></span>
+          <button type="button" class="link-btn" id="switch-account">Not you?</button>
+        </div>
+
+        <label for="confirm-input">Type <strong>DELETE</strong> below</label>
+        <input id="confirm-input" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="DELETE" />
+
+        <div class="actions">
+          <button type="button" class="pill danger" id="delete-button" disabled>Delete forever</button>
+          <button type="button" class="pill ghost" id="cancel-button">Cancel</button>
+        </div>
+      </section>
+
+      <!-- Step 3 -->
+      <section id="done-section" class="done" hidden>
+        <div class="done-icon" aria-hidden="true">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0E7955" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        </div>
+        <h2>Your account has been deleted</h2>
+        <p>Everything stored with your account is gone.</p>
+        <p>If Ledger is still installed on a phone, uninstall it to remove the copy saved on that phone.</p>
+      </section>
+
+      <div id="status" class="banner error" role="alert" hidden></div>
+    </div>
+
+    <p class="alt" id="alt-hint">You can also do this in the app: <strong>Settings → Delete account</strong>.</p>
+  </main>
+
+  <footer class="wrap">Ledger</footer>
+
 <script type="module">
   import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-  // Same values already embedded in the distributed Android APK's own BuildConfig
-  // (feature:auth, feature:settings) and in local.properties -- non-secret by design
-  // (RLS is the real boundary for SUPABASE_ANON_KEY; GOOGLE_CLIENT_ID is the OAuth
-  // audience, not a credential). Hardcoded here, not injected server-side, because
-  // this is now a static file (Supabase Edge Functions force text/plain + a
-  // script-blocking CSP on any GET response that tries to serve HTML -- confirmed
-  // live 2026-09-26 -- so the page itself has to be hosted somewhere else; only
-  // the delete-account API call below still goes to Supabase).
+  // Same values the Android app ships with in its BuildConfig -- public by design
+  // (row-level security protects the data; the Google client ID only names the app).
   const SUPABASE_URL = "https://objcwocrbflwywckltbe.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_aJLulClSY3s0QyD6E8QEVg_I79ae8bn";
   const GOOGLE_CLIENT_ID = "141141696760-mq9uhebnj33uiddj1puevvdnigcuvg43.apps.googleusercontent.com";
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // Session lives in memory only -- nothing is left behind in this browser.
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+  });
 
-  const statusEl = document.getElementById("status");
-  const signInSection = document.getElementById("sign-in-section");
-  const confirmSection = document.getElementById("confirm-section");
-  const emailEl = document.getElementById("signed-in-email");
-  const confirmInput = document.getElementById("confirm-input");
-  const deleteButton = document.getElementById("delete-button");
+  const $ = (id) => document.getElementById(id);
+  const sections = { 1: $("sign-in-section"), 2: $("confirm-section"), 3: $("done-section") };
+  const confirmInput = $("confirm-input");
+  const deleteButton = $("delete-button");
+  const statusEl = $("status");
 
   let accessToken = null;
   let rawNonce = null;
 
-  function setStatus(message, isError) {
-    statusEl.textContent = message || "";
-    statusEl.className = isError ? "status error" : "status";
+  function goTo(step) {
+    for (const [n, el] of Object.entries(sections)) el.hidden = Number(n) !== step;
+    for (let n = 1; n <= 3; n++) {
+      const li = $("step-" + n);
+      li.classList.toggle("active", n === step);
+      li.classList.toggle("passed", n < step);
+      if (n === step) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
+    }
+    $("alt-hint").hidden = step === 3;
+    setError("");
+  }
+
+  function setError(message) {
+    statusEl.textContent = message;
+    statusEl.hidden = !message;
+  }
+
+  function setDeleting(on) {
+    deleteButton.disabled = on || confirmInput.value.trim() !== "DELETE";
+    deleteButton.innerHTML = on ? '<span class="spinner" aria-hidden="true"></span>Deleting…' : "Delete forever";
+    $("cancel-button").disabled = on;
+    $("switch-account").disabled = on;
+    confirmInput.disabled = on;
   }
 
   async function sha256Hex(value) {
-    const data = new TextEncoder().encode(value);
-    const digest = await crypto.subtle.digest("SHA-256", data);
+    const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
     return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
   }
 
   async function handleCredentialResponse(response) {
-    setStatus("Signing you in...", false);
+    setError("");
     try {
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: "google",
@@ -53,78 +264,71 @@
       });
       if (error) throw error;
       accessToken = data.session.access_token;
-      emailEl.textContent = data.user.email || "your account";
-      signInSection.hidden = true;
-      confirmSection.hidden = false;
-      setStatus("", false);
+      $("signed-in-email").textContent = data.user.email || "your account";
+      confirmInput.value = "";
+      setDeleting(false);
+      goTo(2);
+      confirmInput.focus();
     } catch (err) {
-      setStatus("Couldn't sign you in: " + err.message, true);
+      setError("Couldn't sign you in: " + err.message);
     }
   }
 
-  async function init() {
+  async function initGoogle() {
     rawNonce = crypto.randomUUID();
-    const hashedNonce = await sha256Hex(rawNonce);
     google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
-      nonce: hashedNonce,
+      nonce: await sha256Hex(rawNonce),
       callback: handleCredentialResponse,
     });
-    google.accounts.id.renderButton(document.getElementById("g_id_signin"), { theme: "outline", size: "large" });
+    const container = $("g_id_signin");
+    container.innerHTML = "";
+    google.accounts.id.renderButton(container, {
+      theme: "outline",
+      size: "large",
+      shape: "pill",
+      text: "continue_with",
+      width: Math.min(container.offsetWidth || 320, 400),
+    });
+  }
+
+  async function backToSignIn() {
+    accessToken = null;
+    await supabase.auth.signOut().catch(() => {});
+    google.accounts.id.disableAutoSelect();
+    goTo(1);
+    await initGoogle();
   }
 
   confirmInput.addEventListener("input", () => {
-    deleteButton.disabled = confirmInput.value !== "DELETE";
+    deleteButton.disabled = confirmInput.value.trim() !== "DELETE";
+  });
+  confirmInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !deleteButton.disabled) deleteButton.click();
   });
 
+  $("switch-account").addEventListener("click", backToSignIn);
+  $("cancel-button").addEventListener("click", backToSignIn);
+
   deleteButton.addEventListener("click", async () => {
-    deleteButton.disabled = true;
-    setStatus("Deleting your account...", false);
+    setDeleting(true);
+    setError("");
     try {
       const response = await fetch(SUPABASE_URL + "/functions/v1/delete-account", {
         method: "POST",
         headers: { Authorization: "Bearer " + accessToken },
       });
-      const body = await response.json();
+      const body = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(body.error || "The server refused the request");
-      confirmSection.hidden = true;
-      document.getElementById("done-section").hidden = false;
+      accessToken = null;
+      goTo(3);
     } catch (err) {
-      setStatus("Couldn't delete your account: " + err.message, true);
-      deleteButton.disabled = confirmInput.value !== "DELETE";
+      setDeleting(false);
+      setError("Couldn't delete your account: " + err.message);
     }
   });
 
-  window.addEventListener("load", init);
+  window.addEventListener("load", initGoogle);
 </script>
-<style>
-  body { font-family: system-ui, sans-serif; max-width: 480px; margin: 48px auto; padding: 0 16px; color: #1c1b1a; }
-  h1 { font-size: 1.4rem; }
-  .status { min-height: 1.2em; margin-top: 12px; }
-  .status.error { color: #c62828; }
-  input { font-size: 1rem; padding: 8px; width: 100%; box-sizing: border-box; margin-top: 12px; }
-  button { font-size: 1rem; padding: 10px 20px; margin-top: 16px; background: #c62828; color: white; border: none; border-radius: 24px; }
-  button:disabled { background: #ccc; }
-  ul { line-height: 1.6; }
-</style>
-</head>
-<body>
-  <h1>Delete your Ledger account</h1>
-  <p>This deletes your entries, your accounts, your profile, and your Google sign-in link. It happens immediately and cannot be undone.</p>
-  <div id="sign-in-section">
-    <p>Sign in with the Google account you use with Ledger to continue.</p>
-    <div id="g_id_signin"></div>
-  </div>
-  <div id="confirm-section" hidden>
-    <p>Signed in as <strong id="signed-in-email"></strong>.</p>
-    <p>Type <strong>DELETE</strong> to confirm. This is permanent.</p>
-    <input id="confirm-input" type="text" autocomplete="off" />
-    <br />
-    <button id="delete-button" disabled>Delete my account</button>
-  </div>
-  <div id="done-section" hidden>
-    <p>Your account has been deleted.</p>
-  </div>
-  <p id="status" class="status"></p>
 </body>
 </html>
