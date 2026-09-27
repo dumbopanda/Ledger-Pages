@@ -86,13 +86,15 @@
   .who strong { font-weight: 600; word-break: break-all; }
   .link-btn { background: none; border: 0; padding: 4px 0; font: inherit; font-size: 14px; font-weight: 500; color: var(--forest); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
   label { display: block; font-size: 14px; font-weight: 500; margin: 0 0 8px; }
-  input[type=text] {
+  input[type=text], input[type=email] {
     width: 100%; font: inherit; font-size: 16px; letter-spacing: 0.08em;
     padding: 12px 14px; border: 1px solid var(--hairline); border-radius: var(--radius-input);
     background: var(--canvas); color: var(--text); outline: none; transition: border-color .15s, box-shadow .15s;
   }
-  input[type=text]:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(14,121,85,.15); background: var(--surface); }
+  input[type=text]:focus, input[type=email]:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(14,121,85,.15); background: var(--surface); }
 
+  .or { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; margin: 20px 0; }
+  .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--hairline); }
   .actions { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
   .pill {
     display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -145,24 +147,38 @@
       <!-- Step 1 -->
       <section id="sign-in-section" aria-labelledby="title">
         <h1 id="title">Delete your account</h1>
-        <p class="lead">This deletes your entries, your accounts, your profile, and your Google sign-in link. It happens immediately and cannot be undone.</p>
+        <p class="lead">This deletes your entries, your accounts, your profile, and your sign-in. It happens immediately and cannot be undone.</p>
 
         <p class="section-title">What gets deleted</p>
         <ul class="deleted">
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>All your entries</li>
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Your accounts</li>
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Your profile</li>
-          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Google sign-in link</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Your sign-in (Google or email)</li>
         </ul>
 
         <div class="banner warn" role="note">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A6D00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
-          <span><strong>Want to keep a copy?</strong> Before deleting, open Ledger on your phone and go to <strong>Settings → Backup → Save a backup file</strong>.</span>
+          <span><strong>Want to keep a copy?</strong> Before deleting, open Ledger on your phone and go to <strong>Settings → Your own copy → Save file</strong>.</span>
         </div>
 
         <hr class="divider" />
-        <p class="hint">Sign in with the Google account you use with Ledger to continue.</p>
+        <p class="hint">Sign in the way you use Ledger: with Google, or with a code sent to your email.</p>
         <div id="g_id_signin"></div>
+        <p class="or">or</p>
+        <div id="email-step">
+          <label for="email-input">Email</label>
+          <input id="email-input" type="email" autocomplete="email" placeholder="you@example.com" />
+          <div class="actions"><button type="button" class="pill primary" id="send-code">Email me a code</button></div>
+        </div>
+        <div id="code-step" hidden>
+          <label for="code-input">6-digit code sent to <strong id="code-email"></strong></label>
+          <input id="code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" />
+          <div class="actions">
+            <button type="button" class="pill primary" id="verify-code">Continue</button>
+            <button type="button" class="pill ghost" id="change-email">Use a different email</button>
+          </div>
+        </div>
       </section>
 
       <!-- Step 2 -->
@@ -328,6 +344,84 @@
       setError("Couldn't delete your account: " + err.message);
     }
   });
+
+  // Email sign-in: the same 6-digit code the app uses (email-otp Edge Function).
+  const OTP_URL = SUPABASE_URL + "/functions/v1/email-otp";
+  const OTP_ERRORS = {
+    invalid_email: "Enter a valid email address.",
+    cooldown: "A code was sent a moment ago. Wait a couple of minutes, then try again.",
+    too_many: "Too many codes requested. Try again later.",
+    email_unavailable: "Couldn't send the email right now. Try again in a moment.",
+    expired: "That code has expired. Ask for a new one.",
+    locked: "Too many wrong tries. Ask for a new code.",
+    no_code: "That code no longer works. Ask for a new one.",
+  };
+  let codeEmail = "";
+
+  async function otp(body) {
+    const res = await fetch(OTP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY },
+      body: JSON.stringify(body),
+    });
+    return { ok: res.ok, data: await res.json().catch(() => ({})) };
+  }
+
+  function showCodeStep(on) {
+    $("email-step").hidden = on;
+    $("code-step").hidden = !on;
+    if (on) { $("code-email").textContent = codeEmail; $("code-input").value = ""; $("code-input").focus(); }
+  }
+
+  $("send-code").addEventListener("click", async () => {
+    setError("");
+    codeEmail = $("email-input").value.trim().toLowerCase();
+    const button = $("send-code");
+    button.disabled = true;
+    try {
+      const { ok, data } = await otp({ action: "send", email: codeEmail });
+      if (ok) showCodeStep(true);
+      else setError(OTP_ERRORS[data.error] || "Couldn't send a code. Try again.");
+    } catch {
+      setError("Couldn't reach the server. Check your connection and try again.");
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  $("verify-code").addEventListener("click", async () => {
+    setError("");
+    const code = $("code-input").value.replace(/\D/g, "");
+    if (code.length !== 6) { setError("Enter the 6-digit code from the email."); return; }
+    const button = $("verify-code");
+    button.disabled = true;
+    try {
+      const { ok, data } = await otp({ action: "verify", email: codeEmail, code });
+      if (!ok) {
+        const left = data.attempts_left;
+        setError(data.error === "wrong_code" && left != null
+          ? `That's not it. ${left} ${left === 1 ? "try" : "tries"} left.`
+          : OTP_ERRORS[data.error] || "Couldn't check that code. Try again.");
+        return;
+      }
+      accessToken = data.access_token;
+      $("signed-in-email").textContent = data.user?.email || codeEmail;
+      confirmInput.value = "";
+      setDeleting(false);
+      goTo(2);
+      confirmInput.focus();
+    } catch {
+      setError("Couldn't reach the server. Check your connection and try again.");
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  $("code-input").addEventListener("keydown", (e) => { if (e.key === "Enter") $("verify-code").click(); });
+  $("email-input").addEventListener("keydown", (e) => { if (e.key === "Enter") $("send-code").click(); });
+  $("change-email").addEventListener("click", () => { setError(""); showCodeStep(false); });
+  $("switch-account").addEventListener("click", () => showCodeStep(false));
+  $("cancel-button").addEventListener("click", () => showCodeStep(false));
 
   window.addEventListener("load", initGoogle);
 </script>

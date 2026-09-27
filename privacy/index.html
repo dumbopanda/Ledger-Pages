@@ -63,7 +63,7 @@
   <main class="wrap">
     <div class="card">
       <h1>Privacy Policy</h1>
-      <p class="updated">Last updated 26 September 2026</p>
+      <p class="updated">Last updated 28 September 2026</p>
 
       <p>Ledger is a personal expense tracker built and run by an individual developer, not a company. This page explains, in plain language, what data Ledger collects, why, where it's kept, and how you can get it deleted.</p>
 
@@ -83,20 +83,24 @@
       <h2 id="collect">What we collect</h2>
       <p>Only what's needed to run the app:</p>
       <ul>
-        <li><strong>Your email address and Google account ID</strong> — from Google Sign-In, used to identify your account. Ledger never sees or stores a password.</li>
-        <li><strong>The entries you create</strong> — amounts, accounts, categories, names, notes and dates you enter into the app.</li>
+        <li><strong>Your email address</strong>, used to identify your account. If you sign in with Google we also receive your Google account ID. Ledger never sees or stores a password.</li>
+        <li><strong>Your name</strong>, as you type it when signing up, or as Google supplies it. It's used to greet you in the app.</li>
+        <li><strong>Age, city and occupation, only if you choose to give them.</strong> All three are optional and can be skipped.</li>
+        <li><strong>The entries you create</strong>: amounts, accounts, starting balances, categories, names, notes and dates you enter into the app.</li>
+        <li><strong>Sign-in codes.</strong> When you sign in by email we keep a scrambled (hashed) copy of the 6-digit code, your email address and the network (IP) address the request came from. This is used only to check the code and to stop abuse, such as someone flooding an inbox with codes. Codes expire after 5 minutes, and these records are cleared out automatically, normally within two days.</li>
       </ul>
-      <p>That's the complete list. No phone number, no name beyond what Google supplies, no device fingerprinting, no location, no contacts or photos.</p>
+      <p>That's the complete list. No phone number, no device fingerprinting, no location tracking, no contacts or photos.</p>
 
       <h2 id="why">Why we collect it</h2>
-      <p>Solely to operate the ledger you use: to show your entries back to you, keep your accounts and balances correct, and sync your data between your devices. Nothing is used for advertising, profiling, or any purpose beyond running the app you asked for.</p>
+      <p>To operate the ledger you use: to show your entries back to you, keep your accounts and balances correct, and sync your data between your devices.</p>
+      <p>The optional age, city and occupation answers help us understand who uses Ledger, so we build what those people need. They are never shown to anyone, never sold, and never used for advertising or to profile you individually.</p>
       <p>Ledger has no ads and no third-party analytics or tracking SDKs of any kind.</p>
 
       <h2 id="store">Where it's stored</h2>
       <p>Your data is stored on <a href="https://supabase.com" target="_blank" rel="noopener">Supabase</a>, a database provider, hosted in a data center in India (AWS's Mumbai / <code>ap-south-1</code> region). All traffic between the app and this server is encrypted in transit.</p>
 
       <h2 id="share">Sharing with third parties</h2>
-      <p>We do not sell your data. We do not share it with advertisers. We do not share it with any third party except the infrastructure providers strictly needed to run the app (Supabase for storage, Sentry for crash reports — see below, and Google for sign-in). None of these providers is permitted to use your data for their own purposes.</p>
+      <p>We do not sell your data. We do not share it with advertisers. We do not share it with any third party except the infrastructure providers strictly needed to run the app: Supabase for storage, Sentry for crash reports (see below), and Google, both for Google Sign-In and because sign-in code emails are sent through Gmail. None of these providers is permitted to use your data for their own purposes.</p>
 
       <h2 id="crash">Crash reports</h2>
       <p>If the app crashes, a technical error report is sent to <a href="https://sentry.io" target="_blank" rel="noopener">Sentry</a>, a crash-monitoring service, so bugs can be found and fixed. These reports never contain your amounts, entry names, notes, or any other financial data — that information is deliberately stripped out before anything is sent.</p>
@@ -105,13 +109,13 @@
       <p>You can:</p>
       <ul>
         <li><strong>See and correct your data</strong> at any time, directly in the app — it's your ledger, shown to you in full.</li>
-        <li><strong>Export a copy</strong> of your data as a file, from Settings → Backup → Save a backup file.</li>
-        <li><strong>Delete your account and all your data</strong>, immediately and permanently, either in the app (Settings → Delete account) or from this public page: <a href="https://dumbopanda.github.io/Ledger-Pages/delete-account/">dumbopanda.github.io/Ledger-Pages/delete-account</a>. Deletion removes your entries, your accounts, your profile, and your Google sign-in link, and cannot be undone.</li>
+        <li><strong>Export a copy</strong> of your data as a file, from Settings → Your own copy → Save file.</li>
+        <li><strong>Delete your account and all your data</strong>, immediately and permanently, either in the app (Settings → Delete account) or from this public page: <a href="https://dumbopanda.github.io/Ledger-Pages/delete-account/">dumbopanda.github.io/Ledger-Pages/delete-account</a>. Deletion removes your entries, your accounts, your profile (including any name, age, city and occupation), and your sign-in, and cannot be undone.</li>
       </ul>
       <div class="callout">If you're in India, these rights are also protected under the <strong>Digital Personal Data Protection Act, 2023 (DPDP Act)</strong>. You can raise a complaint or request about your data at any time using the contact address below — that's your named grievance contact for this app.</div>
 
       <h2 id="security">Security</h2>
-      <p>Your data is protected by row-level access rules on the database itself, so only your signed-in account can ever read or write your own entries — not other users, and not even a misconfigured feature of the app. There is no password to steal: sign-in is handled entirely by Google.</p>
+      <p>Your data is protected by row-level access rules on the database itself, so only your signed-in account can ever read or write your own entries — not other users, and not even a misconfigured feature of the app. There is no password to steal: you sign in with Google, or with a one-time code sent to your email that works once and expires in 5 minutes.</p>
 
       <h2 id="children">Children's privacy</h2>
       <p>Ledger is not directed at children and is not knowingly used to collect data from anyone under 18. If you believe a child's data has been collected, contact us below and it will be deleted.</p>
