@@ -9,134 +9,71 @@
 <link rel="icon" type="image/png" href="../assets/icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<meta name="theme-color" content="#121614" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/ledger.css" />
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
-  /* Colours, type and shapes mirror the Android app's design system (core:designsystem). */
-  :root {
-    --canvas: #F4F1EA;
-    --surface: #FFFFFF;
-    --forest: #0E7955;
-    --lime: #CCF244;
-    --mint: #DDF3E4;
-    --amber: #FFDE73;
-    --amber-soft: #FFF6D6;
-    --coral: #C62828;
-    --coral-soft: #FBE9E7;
-    --text: #181C1A;
-    --muted: #5F5C56;
-    --hairline: #E5E3DB;
-    --radius-card: 22px;
-    --radius-input: 14px;
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; }
-  body {
-    background: var(--canvas);
-    color: var(--text);
-    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  .wrap { width: 100%; max-width: 520px; margin: 0 auto; padding: 0 16px; }
-
-  header { padding: 28px 0 20px; }
-  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; color: var(--text); text-decoration: none; }
-  .brand-mark { width: 32px; height: 32px; border-radius: 9px; overflow: hidden; display: grid; place-items: center; }
-  .brand-mark img { width: 100%; height: 100%; display: block; }
-
-  main { flex: 1; }
-  .card { background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--radius-card); padding: 28px 24px; }
-  @media (min-width: 480px) { .card { padding: 32px; } }
-
-  h1 { font-size: 28px; line-height: 36px; font-weight: 700; margin: 0 0 8px; letter-spacing: -0.01em; }
-  .lead { color: var(--muted); margin: 0 0 24px; }
+  /* Only what this page adds to ../assets/ledger.css. */
+  .card { padding-bottom: 26px; }
+  @media (min-width: 560px) { .card { padding-bottom: 34px; } }
+  .card h2.step-title { font-size: 24px; line-height: 1.2; margin: 0 0 8px; letter-spacing: -0.02em; }
+  .lead { color: var(--muted); margin: 0 0 22px; }
 
   /* Step indicator */
-  .steps { display: flex; gap: 8px; list-style: none; padding: 0; margin: 0 0 28px; }
-  .steps li { flex: 1; font-size: 12px; font-weight: 500; color: var(--muted); }
+  .steps { display: flex; gap: 8px; list-style: none; padding: 0; margin: 0 0 26px; }
+  .steps li { flex: 1; font-size: 12px; font-weight: 700; color: var(--muted); margin: 0; }
   .steps li::before { content: ""; display: block; height: 4px; border-radius: 4px; background: var(--hairline); margin-bottom: 8px; transition: background .2s; }
   .steps li.active { color: var(--text); }
   .steps li.active::before { background: var(--forest); }
   .steps li.passed::before { background: var(--forest); opacity: .45; }
 
   /* What gets deleted */
-  .section-title { font-size: 14px; font-weight: 600; margin: 0 0 12px; }
+  .section-title { font-size: 14px; font-weight: 800; margin: 0 0 12px; }
   .deleted { list-style: none; padding: 0; margin: 0 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .deleted li { display: flex; align-items: center; gap: 10px; background: var(--canvas); border-radius: var(--radius-input); padding: 12px; font-size: 14px; font-weight: 500; }
+  .deleted li { display: flex; align-items: center; gap: 10px; background: var(--canvas); border-radius: var(--radius-input); padding: 12px; font-size: 14px; font-weight: 600; margin: 0; line-height: 1.35; }
   .deleted svg { flex: none; color: var(--coral); }
 
-  .banner { display: flex; gap: 12px; border-radius: var(--radius-input); padding: 14px 16px; font-size: 14px; margin: 0 0 24px; }
-  .banner svg { flex: none; margin-top: 1px; }
+  .banner { display: flex; gap: 12px; border-radius: var(--radius-input); padding: 14px 16px; font-size: 14px; margin: 0 0 24px; line-height: 1.5; }
+  .banner svg { flex: none; margin-top: 2px; }
   .banner.warn { background: var(--amber-soft); border: 1px solid var(--amber); }
   .banner.error { background: var(--coral-soft); color: var(--coral); border: 1px solid #F3C7C3; margin: 16px 0 0; }
-  .banner strong { font-weight: 600; }
-
-  .divider { height: 1px; background: var(--hairline); margin: 4px 0 24px; border: 0; }
 
   .hint { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
   #g_id_signin { min-height: 44px; display: flex; justify-content: center; }
+  .or { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; font-weight: 700; margin: 20px 0; text-transform: uppercase; letter-spacing: .08em; }
+  .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--hairline); }
+  .actions { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
 
   /* Confirm step */
-  .who { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--mint); border-radius: var(--radius-input); padding: 12px 16px; margin: 0 0 20px; font-size: 14px; }
-  .who strong { font-weight: 600; word-break: break-all; }
-  .link-btn { background: none; border: 0; padding: 4px 0; font: inherit; font-size: 14px; font-weight: 500; color: var(--forest); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
-  label { display: block; font-size: 14px; font-weight: 500; margin: 0 0 8px; }
-  input[type=text], input[type=email] {
-    width: 100%; font: inherit; font-size: 16px; letter-spacing: 0.08em;
-    padding: 12px 14px; border: 1px solid var(--hairline); border-radius: var(--radius-input);
-    background: var(--canvas); color: var(--text); outline: none; transition: border-color .15s, box-shadow .15s;
-  }
-  input[type=text]:focus, input[type=email]:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(14,121,85,.15); background: var(--surface); }
-
-  .or { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; margin: 20px 0; }
-  .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--hairline); }
-  .actions { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
-  .pill {
-    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-    min-height: 48px; padding: 12px 24px; border: 0; border-radius: 999px;
-    font: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .15s, opacity .15s;
-  }
-  .pill.danger { background: var(--coral); color: #fff; }
-  .pill.danger:hover:not(:disabled) { background: #A91F1F; }
-  .pill.primary { background: var(--forest); color: var(--canvas); }
-  .pill:disabled { background: var(--hairline); color: var(--muted); cursor: not-allowed; }
-  .pill.ghost { background: transparent; color: var(--muted); font-weight: 500; }
-  .pill.ghost:hover { color: var(--text); }
-  button:focus-visible, a:focus-visible { outline: 3px solid rgba(14,121,85,.4); outline-offset: 2px; }
+  .who { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--mint); color: var(--mint-ink); border-radius: var(--radius-input); padding: 12px 16px; margin: 0 0 20px; font-size: 14px; }
+  .who strong { word-break: break-all; }
+  .link-btn { background: none; border: 0; padding: 4px 0; font: inherit; font-size: 14px; font-weight: 700; color: var(--forest); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+  #confirm-input { letter-spacing: .1em; font-weight: 700; }
 
   .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* Done step */
   .done { text-align: center; padding: 8px 0; }
-  .done-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--mint); display: grid; place-items: center; margin: 0 auto 20px; }
-  .done h2 { font-size: 22px; line-height: 28px; font-weight: 600; margin: 0 0 8px; }
+  .done-icon { width: 64px; height: 64px; border-radius: 50%; background: var(--ink); display: grid; place-items: center; margin: 0 auto 20px; }
+  .done h2 { font-size: 22px; line-height: 1.3; margin: 0 0 8px; }
   .done p { color: var(--muted); margin: 0 0 8px; }
 
   .alt { font-size: 14px; color: var(--muted); text-align: center; margin: 20px 0 0; }
-
-  footer { padding: 28px 0 32px; font-size: 13px; color: var(--muted); text-align: center; }
-
-  [hidden] { display: none !important; }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation-duration: 1.5s !important; } }
 </style>
 </head>
 <body>
-  <header class="wrap">
-    <span class="brand">
-      <span class="brand-mark" aria-hidden="true">
-        <img src="../assets/icon.png" width="32" height="32" alt="" />
-      </span>
-      Ledger
-    </span>
-  </header>
+  <div class="hero">
+    <div class="wrap narrow">
+      <a class="brand" href="https://dumbopanda.github.io/Ledger-Pages/"><img src="../assets/icon.png" width="34" height="34" alt="" />Ledger</a>
+      <p class="eyebrow">Delete account</p>
+      <h1 class="display" id="title">Delete your account. <span class="accent">Everything, for good.</span></h1>
+    </div>
+  </div>
 
-  <main class="wrap">
+  <main class="sheet">
+    <div class="wrap narrow">
     <div class="card">
       <ol class="steps" aria-label="Progress">
         <li id="step-1" class="active" aria-current="step">1 · Sign in</li>
@@ -146,7 +83,6 @@
 
       <!-- Step 1 -->
       <section id="sign-in-section" aria-labelledby="title">
-        <h1 id="title">Delete your account</h1>
         <p class="lead">This deletes your entries, your accounts, your profile, and your sign-in. It happens immediately and cannot be undone.</p>
 
         <p class="section-title">What gets deleted</p>
@@ -183,7 +119,7 @@
 
       <!-- Step 2 -->
       <section id="confirm-section" aria-labelledby="confirm-title" hidden>
-        <h1 id="confirm-title">Type DELETE to confirm</h1>
+        <h2 class="step-title" id="confirm-title">Type DELETE to confirm</h2>
         <p class="lead">This is the last step. It cannot be undone.</p>
 
         <div class="who">
@@ -203,7 +139,7 @@
       <!-- Step 3 -->
       <section id="done-section" class="done" hidden>
         <div class="done-icon" aria-hidden="true">
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0E7955" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#CCF244" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
         </div>
         <h2>Your account has been deleted</h2>
         <p>Everything stored with your account is gone.</p>
@@ -214,9 +150,12 @@
     </div>
 
     <p class="alt" id="alt-hint">You can also do this in the app: <strong>Settings → Delete account</strong>.</p>
+    <footer class="foot">
+      <nav><a href="../">Ledger home</a><a href="../privacy/">Privacy Policy</a><a href="../terms/">Terms of Service</a></nav>
+      theledgerapp.support@gmail.com
+    </footer>
+    </div>
   </main>
-
-  <footer class="wrap">Ledger</footer>
 
 <script type="module">
   import { createClient } from "https://esm.sh/@supabase/supabase-js@2";

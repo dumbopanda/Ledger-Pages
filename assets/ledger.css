@@ -1,0 +1,119 @@
+/* Ledger's public pages, in the app's own design system (core:designsystem):
+   a dark ink hero with a white + lime display headline, over a cream sheet. */
+:root {
+  --ink: #121614;
+  --canvas: #F4F1EA;
+  --surface: #FFFFFF;
+  --forest: #0E7955;
+  --lime: #CCF244;
+  --mint: #DDF3E4;
+  --mint-ink: #14614A;
+  --amber: #FFDE73;
+  --amber-soft: #FFF6D6;
+  --coral: #C62828;
+  --coral-soft: #FBE9E7;
+  --text: #181C1A;
+  --muted: #5F5C56;
+  --muted-on-dark: #9EAD9C;
+  --track-on-dark: rgba(255, 255, 255, .06);
+  --track-border-on-dark: rgba(255, 255, 255, .12);
+  --hairline: #E5E3DB;
+  --hairline-strong: #D4D0C4;
+  --radius-sheet: 28px;
+  --radius-card: 22px;
+  --radius-input: 14px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--ink);
+  color: var(--text);
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.wrap { width: 100%; max-width: 680px; margin: 0 auto; padding: 0 20px; }
+.wrap.narrow { max-width: 540px; }
+a { color: var(--forest); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid rgba(14, 121, 85, .45); outline-offset: 2px; }
+.hero a:focus-visible { outline-color: var(--lime); }
+
+/* ---- Hero ------------------------------------------------------------ */
+.hero { position: relative; overflow: hidden; color: #fff; padding: 24px 0 44px; }
+.hero::before {
+  content: ""; position: absolute; width: 420px; height: 420px; right: -140px; top: -170px;
+  background: radial-gradient(circle, rgba(204, 242, 68, .20), transparent 65%);
+  pointer-events: none;
+}
+.hero .wrap { position: relative; }
+.brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; color: #fff; text-decoration: none; letter-spacing: -0.01em; }
+.brand img { width: 34px; height: 34px; border-radius: 10px; display: block; }
+.eyebrow { margin: 40px 0 12px; color: var(--lime); font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.display { margin: 0; font-size: 34px; line-height: 1.15; font-weight: 800; letter-spacing: -0.025em; color: #fff; }
+.display .accent { color: var(--lime); }
+@media (min-width: 560px) { .display { font-size: 42px; } }
+.hero-lead { margin: 14px 0 0; color: var(--muted-on-dark); font-size: 16px; max-width: 34em; }
+.hero-lead strong { color: #fff; font-weight: 600; }
+
+/* ---- Sheet ----------------------------------------------------------- */
+.sheet { flex: 1; background: var(--canvas); border-radius: var(--radius-sheet) var(--radius-sheet) 0 0; padding: 28px 0 8px; }
+.card { background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--radius-card); padding: 26px 22px 10px; }
+@media (min-width: 560px) { .card { padding: 36px 40px 14px; } }
+.card + .card { margin-top: 14px; }
+.card h2 { font-size: 18px; line-height: 1.35; font-weight: 800; letter-spacing: -0.01em; margin: 30px 0 10px; }
+.card h2:first-child { margin-top: 0; }
+p { margin: 0 0 14px; }
+ul { margin: 0 0 14px; padding-left: 20px; }
+li { margin: 0 0 6px; }
+strong { font-weight: 700; }
+code { font-size: .9em; background: var(--canvas); border-radius: 6px; padding: 1px 6px; }
+
+.toc { list-style: none; padding: 0; margin: 0 0 8px; display: flex; flex-wrap: wrap; gap: 8px; }
+.toc a {
+  display: inline-flex; align-items: center; min-height: 36px; padding: 6px 14px; border-radius: 999px;
+  background: var(--canvas); border: 1px solid var(--hairline); color: var(--text);
+  font-size: 13px; font-weight: 700; text-decoration: none;
+}
+.toc a:hover { border-color: var(--hairline-strong); }
+
+.callout { background: var(--mint); color: var(--mint-ink); border-radius: var(--radius-input); padding: 16px 18px; margin: 0 0 14px; font-size: 15px; }
+.contact { background: var(--canvas); border-radius: var(--radius-input); padding: 18px; margin: 0 0 20px; }
+.divider { height: 1px; background: var(--hairline); margin: 28px 0; border: 0; }
+
+.foot { padding: 24px 0 36px; font-size: 13px; color: var(--muted); text-align: center; }
+.foot a { color: var(--muted); }
+.foot nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 8px; }
+
+/* ---- Buttons and fields (LedgerCta / FirstRunField) ------------------- */
+.pill {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 52px; padding: 12px 24px; border: 0; border-radius: 999px;
+  font: inherit; font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: none;
+  transition: background .15s, opacity .15s;
+}
+.pill.primary { background: var(--forest); color: #fff; }
+.pill.primary::before { content: ""; width: 18px; height: 18px; border-radius: 50%; background: var(--lime); flex: none; }
+.pill.primary:hover:not(:disabled) { background: #0B6848; }
+.pill.lime { background: var(--lime); color: var(--ink); font-weight: 800; }
+.pill.danger { background: var(--coral); color: #fff; }
+.pill.danger:hover:not(:disabled) { background: #A91F1F; }
+.pill.ghost { background: transparent; color: var(--muted); font-weight: 600; }
+.pill.ghost:hover { color: var(--text); }
+.pill:disabled { background: var(--hairline); color: var(--muted); cursor: not-allowed; }
+.pill:disabled::before { background: var(--hairline-strong); }
+
+label { display: block; font-size: 14px; font-weight: 700; margin: 0 0 8px; }
+input[type=text], input[type=email] {
+  width: 100%; height: 56px; font: inherit; font-size: 16px; font-weight: 500;
+  padding: 0 16px; border: 1px solid var(--hairline-strong); border-radius: var(--radius-input);
+  background: var(--surface); color: var(--text); outline: none; transition: border-color .15s, box-shadow .15s;
+}
+input::placeholder { color: #8A877F; }
+input[type=text]:focus, input[type=email]:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(14, 121, 85, .15); }
+
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation-duration: 1.5s !important; } }

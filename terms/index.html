@@ -5,67 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="color-scheme" content="light" />
 <meta name="description" content="The terms you agree to by using Ledger." />
-<title>Terms of Service — Ledger</title>
+<title>Terms of Service · Ledger</title>
 <link rel="icon" type="image/png" href="../assets/icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<style>
-  :root {
-    --canvas: #F4F1EA; --surface: #FFFFFF; --forest: #0E7955; --lime: #CCF244;
-    --mint: #DDF3E4; --amber-soft: #FFF6D6; --amber: #FFDE73; --text: #181C1A; --muted: #5F5C56; --hairline: #E5E3DB;
-    --radius-card: 22px;
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; }
-  body {
-    background: var(--canvas); color: var(--text);
-    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
-    min-height: 100vh; display: flex; flex-direction: column;
-  }
-  .wrap { width: 100%; max-width: 680px; margin: 0 auto; padding: 0 16px; }
-  header { padding: 28px 0 20px; }
-  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; color: var(--text); text-decoration: none; }
-  .brand-mark { width: 32px; height: 32px; border-radius: 9px; overflow: hidden; display: grid; place-items: center; flex: none; }
-  .brand-mark img { width: 100%; height: 100%; display: block; }
-  main { flex: 1; }
-  .card { background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--radius-card); padding: 28px 24px 8px; }
-  @media (min-width: 480px) { .card { padding: 40px 44px 12px; } }
-  h1 { font-size: 28px; line-height: 36px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.01em; }
-  .updated { color: var(--muted); font-size: 14px; margin: 0 0 28px; }
-  h2 { font-size: 18px; font-weight: 600; margin: 32px 0 10px; }
-  p { margin: 0 0 14px; }
-  ul { margin: 0 0 14px; padding-left: 20px; }
-  li { margin: 0 0 6px; }
-  strong { font-weight: 600; }
-  a { color: var(--forest); }
-  .banner { background: var(--amber-soft); border: 1px solid var(--amber); border-radius: 14px; padding: 16px 18px; margin: 0 0 14px; font-size: 15px; }
-  .toc { list-style: none; padding: 0; margin: 0 0 28px; display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 14px; }
-  .toc a { text-decoration: none; }
-  .divider { height: 1px; background: var(--hairline); margin: 28px 0; border: 0; }
-  .contact { background: var(--canvas); border-radius: 14px; padding: 18px; margin: 0 0 24px; }
-  .backlink { display: inline-block; margin: 24px 0 4px; font-size: 14px; color: var(--muted); text-decoration: none; }
-  .backlink:hover { color: var(--text); }
-  footer { padding: 28px 0 32px; font-size: 13px; color: var(--muted); text-align: center; }
-</style>
+<meta name="theme-color" content="#121614" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/ledger.css" />
 </head>
 <body>
-  <header class="wrap">
-    <a class="brand" href="https://dumbopanda.github.io/Ledger-Pages/">
-      <span class="brand-mark" aria-hidden="true">
-        <img src="../assets/icon.png" width="32" height="32" alt="" />
-      </span>
-      Ledger
-    </a>
-  </header>
+  <div class="hero">
+    <div class="wrap">
+      <a class="brand" href="https://dumbopanda.github.io/Ledger-Pages/"><img src="../assets/icon.png" width="34" height="34" alt="" />Ledger</a>
+      <p class="eyebrow">Terms of Service</p>
+      <h1 class="display">The deal, <span class="accent">in plain words.</span></h1>
+      <p class="hero-lead">These are the terms for using Ledger, a personal expense-tracking app built and maintained by an individual developer. By creating an account or using the app, you agree to them. <strong>Last updated 28 September 2026.</strong></p>
+    </div>
+  </div>
 
-  <main class="wrap">
+  <main class="sheet">
+    <div class="wrap">
     <div class="card">
-      <h1>Terms of Service</h1>
-      <p class="updated">Last updated 28 September 2026</p>
-
-      <p>These are the terms for using Ledger, a personal expense-tracking app built and maintained by an individual developer. By creating an account or using the app, you agree to them.</p>
 
       <ul class="toc">
         <li><a href="#service">The service</a></li>
@@ -92,7 +52,7 @@
       <p>You sign in with your Google account, or with a one-time code sent to your email. Ledger has no password. You're responsible for keeping that Google account and that email inbox secure; anyone who can get into either can reach your Ledger data.</p>
 
       <h2 id="data">Your data</h2>
-      <p>The entries you create are yours. Ledger stores them only to provide the service back to you — see the <a href="https://dumbopanda.github.io/Ledger-Pages/privacy/">Privacy Policy</a> for exactly what's collected and why. You can export a copy at any time and delete everything permanently whenever you choose.</p>
+      <p>The entries you create are yours. Ledger stores them only to provide the service back to you. See the <a href="https://dumbopanda.github.io/Ledger-Pages/privacy/">Privacy Policy</a> for exactly what's collected and why. You can export a copy at any time and delete everything permanently whenever you choose.</p>
 
       <h2 id="acceptable-use">Acceptable use</h2>
       <p>Use Ledger only for its intended purpose: tracking your own personal finances. Don't try to break, bypass, or abuse the app's security, and don't use it for anything illegal.</p>
@@ -101,13 +61,13 @@
       <div class="banner">Ledger only records numbers you type in. It does not analyze your finances, does not offer investment, tax, or budgeting advice, and nothing shown in the app should be treated as professional financial guidance.</div>
 
       <h2 id="warranty">No warranty</h2>
-      <p>Ledger is provided "as is," built and maintained by one person, without any guarantee that it will always be available, error-free, or perfectly accurate. Back up your data regularly using the export feature — you are responsible for keeping your own copy of anything important.</p>
+      <p>Ledger is provided "as is," built and maintained by one person, without any guarantee that it will always be available, error-free, or perfectly accurate. Back up your data regularly using the export feature (Settings → Your own copy → Save file). You are responsible for keeping your own copy of anything important.</p>
 
       <h2 id="liability">Limitation of liability</h2>
       <p>To the fullest extent the law allows, the developer of Ledger is not liable for any loss arising from your use of the app, including lost data, missed entries, or decisions made based on what the app shows you. Ledger is free to use and offered without charge.</p>
 
       <h2 id="termination">Ending your account</h2>
-      <p>You can delete your account at any time, in the app or from the <a href="https://dumbopanda.github.io/Ledger-Pages/delete-account/">public deletion page</a> — this is immediate and permanent. We may also suspend or remove access for anyone found abusing the service or attempting to compromise its security.</p>
+      <p>You can delete your account at any time, in the app or from the <a href="https://dumbopanda.github.io/Ledger-Pages/delete-account/">public deletion page</a>. It's immediate and permanent. We may also suspend or remove access for anyone found abusing the service or attempting to compromise its security.</p>
 
       <h2 id="changes">Changes to these terms</h2>
       <p>If these terms change in a meaningful way, the "Last updated" date above will change, and the update will be reflected in the app.</p>
@@ -123,10 +83,12 @@
         <p style="margin-bottom:0"><strong><a href="mailto:theledgerapp.support@gmail.com">theledgerapp.support@gmail.com</a></strong></p>
       </div>
 
-      <a class="backlink" href="https://dumbopanda.github.io/Ledger-Pages/privacy/">← Privacy Policy</a>
+    </div>
+    <footer class="foot">
+      <nav><a href="../">Ledger home</a><a href="../privacy/">Privacy Policy</a><a href="../delete-account/">Delete your account</a></nav>
+      theledgerapp.support@gmail.com
+    </footer>
     </div>
   </main>
-
-  <footer class="wrap">Ledger</footer>
 </body>
 </html>
